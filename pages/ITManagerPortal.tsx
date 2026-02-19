@@ -659,6 +659,72 @@ Resolution Steps
                 ))}
               </div>
             </div>
+
+            {/* KB Intelligence Row */}
+            <div className="grid grid-cols-3 gap-4">
+              <div className="bg-white border border-border rounded-card p-6 shadow-card">
+                <h3 className="text-[15px] font-semibold text-text-primary mb-4">KB Usage by Category</h3>
+                <div className="space-y-3.5">
+                  {[
+                    { name: 'Security KB', value: 1240, color: '#6366F1' },
+                    { name: 'Network KB', value: 892, color: '#06B6D4' },
+                    { name: 'Application KB', value: 756, color: '#F59E0B' },
+                    { name: 'Email KB', value: 623, color: '#10B981' },
+                    { name: 'Hardware KB', value: 234, color: '#EF4444' },
+                  ].map(cat => (
+                    <div key={cat.name} className="flex items-center gap-3">
+                      <span className="text-[12px] text-text-secondary w-[90px]">{cat.name}</span>
+                      <div className="flex-1 h-1.5 bg-bg-page rounded-full overflow-hidden">
+                        <div className="h-full rounded-full" style={{ width: `${(cat.value / 1240) * 100}%`, backgroundColor: cat.color }} />
+                      </div>
+                      <span className="text-[12px] font-bold text-text-primary w-10 text-right">{cat.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-white border border-border rounded-card p-6 shadow-card">
+                <h3 className="text-[15px] font-semibold text-text-primary mb-4">Top KB Articles</h3>
+                <div className="space-y-4">
+                  {[
+                    { title: 'AD Password Reset Guide', views: 1240, res: 312, rating: 4.8 },
+                    { title: 'VPN Config for Remote Workers', views: 892, res: 203, rating: 4.5 },
+                    { title: 'SAP Error 500 Fix', views: 756, res: 156, rating: 4.3 },
+                  ].map((art, i) => (
+                    <div key={i} className="flex flex-col">
+                      <h4 className="text-[13px] font-semibold text-primary truncate">{art.title}</h4>
+                      <div className="flex items-center gap-3 mt-1.5 text-[11px] text-text-muted">
+                        <span className="flex items-center gap-1"><Eye size={12} /> {art.views}</span>
+                        <span className="flex items-center gap-1"><CheckCircle size={12} /> {art.res} res.</span>
+                        <span className="flex items-center gap-1"><Star size={12} className="text-warning fill-warning" /> {art.rating}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-white border border-border rounded-card p-6 shadow-card">
+                <h3 className="text-[15px] font-semibold text-text-primary mb-4">KB Coverage Gaps</h3>
+                <div className="space-y-4">
+                  {[
+                    { issue: 'SAP Batch Scheduler Crashes', tickets: 34, deflection: 78 },
+                    { issue: 'VPN Split Tunnel Config', tickets: 22, deflection: 65 },
+                    { issue: 'Outlook Desktop Mac issues', tickets: 18, deflection: 72 },
+                  ].map((gap, i) => (
+                    <div key={i} className="flex justify-between items-center">
+                      <div>
+                        <h4 className="text-[13px] font-semibold text-text-primary">{gap.issue}</h4>
+                        <span className="text-[11px] text-text-muted">{gap.tickets} tickets this week</span>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-[13px] font-bold text-danger">{gap.deflection}%</div>
+                        <div className="text-[10px] text-text-muted uppercase font-bold">Gap</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
@@ -705,7 +771,7 @@ Resolution Steps
                     </table>
                   </div>
                 </div>
-                <aside className="w-[300px] border-l border-border bg-white flex flex-col flex-shrink-0">
+                <aside className="w-[380px] border-l border-border bg-white flex flex-col flex-shrink-0">
                   <header className="p-5 border-b border-border-subtle flex justify-between items-center">
                     <div className="flex items-center gap-2"><FileText size={16} className="text-primary" /><h3 className="text-[14px] font-semibold text-primary">Requested KB</h3></div>
                     <span className="bg-primary-light text-primary text-[12px] font-bold px-2 py-0.5 rounded-full">{REQUESTED_KB.length}</span>
@@ -756,15 +822,93 @@ Resolution Steps
                 <nav className="px-6 py-4 border-b border-border bg-white flex items-center flex-shrink-0"><button onClick={() => { setKbView('list'); setIsPDFOpen(false); }} className="flex items-center gap-1.5 text-primary text-[14px] font-semibold"><ChevronLeft size={16} /> Back to Knowledge Base</button></nav>
                 <div className="flex-1 flex overflow-hidden">
                   <div className="flex-1 overflow-y-auto p-8 max-w-[1000px] mx-auto w-full">
-                    <div className="flex justify-between mb-4"><h1 className="text-[26px] font-bold text-text-primary">{selectedArticle?.title}</h1><button className="flex items-center gap-2 border border-border px-4 py-2 rounded-btn text-[14px] font-medium"><Edit size={16} /> Edit</button></div>
+                    <div className="flex justify-between mb-4">
+                      <h1 className="text-[26px] font-bold text-text-primary">{selectedArticle?.title || 'VPN Configuration for Remote Workers'}</h1>
+                      <button className="flex items-center gap-2 border border-border px-4 py-2 rounded-btn text-[14px] font-medium"><Edit size={16} /> Edit</button>
+                    </div>
                     <button onClick={() => setIsPDFOpen(true)} className="inline-flex items-center gap-2 border border-primary text-primary px-4 py-2 rounded-btn text-[13px] font-bold mb-8"><FileText size={14} /> View Original PDF</button>
-                    <section className="space-y-7"><div><h2 className="text-[17px] font-bold mb-2">Overview</h2><p className="text-[14px] leading-relaxed opacity-90">Comprehensive troubleshooting and resolution steps for infrastructure related issues.</p></div></section>
+                    
+                    <div className="text-[14px] text-[#111827] leading-[1.8] space-y-8">
+                      <section>
+                        <h2 className="text-[17px] font-bold mb-2">Overview</h2>
+                        <p>This article provides comprehensive troubleshooting and resolution steps for Network-related issues frequently encountered across Maruti Suzuki IT infrastructure. It covers initial diagnostics, service restart procedures, cache clearing, and connectivity verification.</p>
+                      </section>
+
+                      <section>
+                        <h2 className="text-[17px] font-bold mb-2">Problem Description</h2>
+                        <p>Users may experience service disruption, application errors, or connectivity issues related to VPN configuration for remote workers. Common symptoms include timeout errors, authentication failures, and intermittent connectivity drops.</p>
+                      </section>
+
+                      <section>
+                        <h2 className="text-[17px] font-bold mb-2">Prerequisites</h2>
+                        <ul className="list-disc pl-5 space-y-1 text-[#374151]">
+                          <li>Admin access to the relevant service/application</li>
+                          <li>Network connectivity to the affected systems</li>
+                          <li>Access to monitoring dashboards</li>
+                        </ul>
+                      </section>
+
+                      <section>
+                        <h2 className="text-[17px] font-bold mb-2">Resolution Steps</h2>
+                        <ol className="list-decimal pl-5 space-y-4">
+                          <li><strong>Initial Diagnostics:</strong> Check the application/service status on the centralized monitoring dashboard. Look for any alerts or anomalies in the last 24 hours.</li>
+                          <li><strong>Service Restart:</strong> If the service is unresponsive, perform a graceful restart and wait 60 seconds for the service to fully initialize.</li>
+                          <li><strong>Cache Clearing:</strong> Clear application cache via admin panel, reset user session cache, and flush DNS on affected workstations.</li>
+                          <li><strong>Connectivity Verification:</strong> Ping the service endpoint, check firewall rules, validate SSL certificates, and test from multiple network segments.</li>
+                          <li><strong>User Validation:</strong> Confirm resolution with affected users — ask them to clear browser cache, re-login, and verify the specific failing workflow.</li>
+                        </ol>
+                      </section>
+
+                      <section>
+                        <h2 className="text-[17px] font-bold mb-2">Troubleshooting Tips</h2>
+                        <ul className="list-disc pl-5 space-y-1 text-[#374151]">
+                          <li>If the issue persists after service restart, check system logs for memory or disk issues</li>
+                          <li>For Cisco AnyConnect issues specifically, verify the VPN profile XML is not corrupted</li>
+                          <li>Escalate to L2 if the issue affects more than 5 users simultaneously</li>
+                        </ul>
+                      </section>
+                    </div>
                   </div>
                   <aside className="w-[280px] border-l border-border p-6 bg-white relative">
-                    <h3 className="text-micro font-bold uppercase text-text-muted mb-5">ARTICLE METADATA</h3>
-                    <div className="space-y-6">
-                      <div className="pb-4 border-b border-border-subtle"><label className="text-micro font-bold text-text-muted uppercase mb-1.5 block">STATUS</label><span className={`text-[12px] font-bold px-2.5 py-1 rounded-badge ${getStatusStyle(selectedArticle?.status || '')}`}>{selectedArticle?.status}</span></div>
-                      <div><label className="text-micro font-bold text-text-muted uppercase mb-2 block">CONTENT FRESHNESS</label><div className="h-2 bg-bg-page rounded-full overflow-hidden"><div className="h-full bg-primary" style={{ width: '95%' }} /></div></div>
+                    <h3 className="text-micro font-bold uppercase text-text-muted mb-5 tracking-wider">ARTICLE METADATA</h3>
+                    <div className="flex flex-col">
+                      <div className="py-3.5 border-b border-[#F3F4F6]">
+                        <label className="text-micro font-bold text-text-muted uppercase mb-1.5 block">STATUS</label>
+                        <span className="bg-[#D1FAE5] text-[#059669] text-[12px] font-bold px-2.5 py-1 rounded-[6px]">Published</span>
+                      </div>
+                      <div className="py-3.5 border-b border-[#F3F4F6]">
+                        <label className="text-micro font-bold text-text-muted uppercase mb-1.5 block">CATEGORY</label>
+                        <span className="text-[14px] font-medium text-[#111827]">Network</span>
+                      </div>
+                      <div className="py-3.5 border-b border-[#F3F4F6]">
+                        <label className="text-micro font-bold text-text-muted uppercase mb-1.5 block">LAST UPDATED</label>
+                        <span className="text-[14px] font-medium text-[#111827]">2 days ago</span>
+                      </div>
+                      <div className="py-3.5 border-b border-[#F3F4F6]">
+                        <label className="text-micro font-bold text-text-muted uppercase mb-1.5 block">VIEWS</label>
+                        <div className="flex items-center gap-2 text-[14px] font-medium text-[#111827]">
+                          <Eye size={14} className="text-text-muted" />
+                          892
+                        </div>
+                      </div>
+                      <div className="py-3.5 border-b border-[#F3F4F6]">
+                        <label className="text-micro font-bold text-text-muted uppercase mb-1.5 block">HELPFUL RATING</label>
+                        <div className="flex items-center gap-2 text-[14px] font-medium text-[#10B981]">
+                          <ThumbsUp size={14} />
+                          88%
+                        </div>
+                      </div>
+                      <div className="py-3.5 border-b border-[#F3F4F6]">
+                        <label className="text-micro font-bold text-text-muted uppercase mb-2 block">CONTENT FRESHNESS</label>
+                        <div className="w-full h-2 bg-[#F3F4F6] rounded-full overflow-hidden">
+                          <div className="h-full bg-primary" style={{ width: '95%' }} />
+                        </div>
+                        <div className="text-right mt-1.5 text-[13px] font-semibold text-[#111827]">95%</div>
+                      </div>
+                      <div className="py-3.5">
+                        <label className="text-micro font-bold text-text-muted uppercase mb-1.5 block">AUTHOR</label>
+                        <span className="text-[14px] font-medium text-[#111827]">IT Knowledge Team</span>
+                      </div>
                     </div>
                     {/* PDF Panel */}
                     <div className={`absolute inset-0 bg-white z-20 flex flex-col border-l border-border transition-transform duration-300 ${isPDFOpen ? 'translate-x-0 shadow-[-4px_0_16px_rgba(0,0,0,0.08)]' : 'translate-x-[460px]'}`} style={{ width: '460px', right: 0 }}>
@@ -1169,27 +1313,6 @@ const VendorManagement: React.FC<{
             ))}
           </div>
 
-          {/* Ticket Volume Trend */}
-          <div className="bg-white border border-border rounded-[12px] p-5 px-6 mb-6 shadow-card">
-            <h3 className="text-[15px] font-semibold text-text-primary">Ticket Volume & Resolution Trend</h3>
-            <p className="text-[12px] text-text-muted mt-0.5 mb-5">Weekly tickets assigned vs resolved — last 30 days</p>
-            <div className="h-[280px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={TECH_MAHINDRA_VOLUME_TREND}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F3F4F6" />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#9CA3AF', fontSize: 12 }} dy={10} />
-                  <YAxis domain={[0, 20]} axisLine={false} tickLine={false} tick={{ fill: '#9CA3AF', fontSize: 12 }} />
-                  <Tooltip 
-                    contentStyle={{ borderRadius: '8px', border: '1px solid #E5E7EB', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}
-                  />
-                  <Legend iconType="square" wrapperStyle={{ paddingTop: '20px', fontSize: '12px', color: '#6B7280' }} />
-                  <Line name="Assigned" type="monotone" dataKey="assigned" stroke="#5B4FE8" strokeWidth={2} dot={{ fill: '#5B4FE8', r: 4 }} />
-                  <Line name="Resolved" type="monotone" dataKey="resolved" stroke="#10B981" strokeWidth={2} dot={{ fill: '#10B981', r: 4 }} />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
           {/* Charts Row */}
           <div className="flex gap-4 mb-6">
             <div className="flex-1 bg-white border border-border rounded-[12px] p-5 px-6 shadow-card">
@@ -1272,24 +1395,46 @@ const VendorManagement: React.FC<{
             </table>
           </div>
 
-          {/* SLA Analysis */}
-          <div className="bg-white border border-border rounded-[12px] p-5 px-6 mb-6 shadow-card">
-            <h3 className="text-[15px] font-semibold text-text-primary">SLA Analysis — Breach Rate by Priority</h3>
-            <p className="text-[12px] text-text-muted mt-0.5 mb-4">% of tickets that breached SLA per priority tier</p>
-            <div className="h-[200px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={TECH_MAHINDRA_BREACH_RATE} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#F3F4F6" />
-                  <XAxis type="number" domain={[0, 100]} hide />
-                  <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{ fill: '#9CA3AF', fontSize: 12 }} width={30} />
-                  <Tooltip 
-                    cursor={{ fill: '#F9FAFB' }}
-                    contentStyle={{ borderRadius: '8px', border: '1px solid #E5E7EB', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}
-                  />
-                  <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={24} label={{ position: 'right', fill: '#6B7280', fontSize: 12, formatter: (v: any) => `${v}%` }} />
-                  <ReferenceLine x={25} stroke="#EF4444" strokeDasharray="4 4" label={{ position: 'top', value: '25% threshold', fill: '#EF4444', fontSize: 11 }} />
-                </BarChart>
-              </ResponsiveContainer>
+          {/* Charts Row 2 */}
+          <div className="flex gap-4 mb-6">
+            <div className="flex-[0_0_55%] bg-white border border-border rounded-[12px] p-5 px-6 shadow-card">
+              <h3 className="text-[15px] font-semibold text-text-primary">Ticket Volume & Resolution Trend</h3>
+              <p className="text-[12px] text-text-muted mt-0.5 mb-5">Weekly tickets assigned vs resolved — last 30 days</p>
+              <div className="h-[240px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={TECH_MAHINDRA_VOLUME_TREND}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F3F4F6" />
+                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#9CA3AF', fontSize: 12 }} dy={10} />
+                    <YAxis domain={[0, 20]} axisLine={false} tickLine={false} tick={{ fill: '#9CA3AF', fontSize: 12 }} />
+                    <Tooltip 
+                      contentStyle={{ borderRadius: '8px', border: '1px solid #E5E7EB', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}
+                    />
+                    <Legend iconType="square" wrapperStyle={{ paddingTop: '20px', fontSize: '12px', color: '#6B7280' }} />
+                    <Line name="Assigned" type="monotone" dataKey="assigned" stroke="#5B4FE8" strokeWidth={2} dot={{ fill: '#5B4FE8', r: 4 }} />
+                    <Line name="Resolved" type="monotone" dataKey="resolved" stroke="#10B981" strokeWidth={2} dot={{ fill: '#10B981', r: 4 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            <div className="flex-1 bg-white border border-border rounded-[12px] p-5 px-6 shadow-card">
+              <h3 className="text-[15px] font-semibold text-text-primary">SLA Analysis — Breach Rate by Priority</h3>
+              <p className="text-[12px] text-text-muted mt-0.5 mb-4">% of tickets that breached SLA per priority tier</p>
+              <div className="h-[240px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={TECH_MAHINDRA_BREACH_RATE} layout="vertical">
+                    <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#F3F4F6" />
+                    <XAxis type="number" domain={[0, 100]} hide />
+                    <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{ fill: '#9CA3AF', fontSize: 12 }} width={30} />
+                    <Tooltip 
+                      cursor={{ fill: '#F9FAFB' }}
+                      contentStyle={{ borderRadius: '8px', border: '1px solid #E5E7EB', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}
+                    />
+                    <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={24} label={{ position: 'right', fill: '#6B7280', fontSize: 12, formatter: (v: any) => `${v}%` }} />
+                    <ReferenceLine x={25} stroke="#EF4444" strokeDasharray="4 4" label={{ position: 'top', value: '25% threshold', fill: '#EF4444', fontSize: 11 }} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
             </div>
           </div>
 
