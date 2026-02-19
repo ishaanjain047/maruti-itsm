@@ -1854,7 +1854,20 @@ const SingleTicketView: React.FC<{ ticket: any, onBack: () => void }> = ({ ticke
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-3"><span className="text-[14px] font-semibold text-primary">{ticket?.id || 'INC-4525'}</span><PriorityBadge priority={ticket?.priority || 'P1'} /></div>
               <div className="flex items-center gap-[10px]">
-                <div className="border border-[#FCA5A5] bg-[#FEF2F2] rounded-[8px] px-[14px] py-[6px] flex items-center gap-[6px]"><Clock size={14} className="text-danger" /><span className="text-[13px] font-bold text-danger">12 min</span></div>
+                {/* Element 1 — SLA CHIP */}
+                <div className="border border-[#FCA5A5] bg-[#FEF2F2] rounded-[8px] px-[14px] py-[6px] flex items-center gap-[5px] flex-shrink-0">
+                  <Clock size={14} className="text-[#EF4444]" />
+                  <span className="text-[11px] font-bold text-[#EF4444] uppercase tracking-wider">SLA</span>
+                  <span className="text-[13px] font-bold text-[#EF4444]">12 min</span>
+                </div>
+
+                {/* Element 1b — OLA CHIP */}
+                <div className="border border-[#FDE68A] bg-[#FFFBEB] rounded-[8px] px-[14px] py-[6px] flex items-center gap-[5px] flex-shrink-0">
+                  <Clock size={14} className="text-[#D97706]" />
+                  <span className="text-[11px] font-bold text-[#D97706] uppercase tracking-wider">OLA</span>
+                  <span className="text-[13px] font-bold text-[#D97706]">6 min</span>
+                </div>
+
                 <button className="border border-border bg-white rounded-[8px] px-4 py-2 flex items-center gap-[6px] hover:bg-bg-page transition-colors"><ArrowUpRight size={14} /><span className="text-[14px]">Escalate</span></button>
                 <button className="bg-[#10B981] rounded-[8px] px-4 py-2 flex items-center gap-[6px] hover:bg-[#059669] text-white"><UserCheck size={14} /><span className="text-[14px] font-medium">Re-assign</span></button>
                 <button className="bg-[#7C3AED] rounded-[8px] px-4 py-2 flex items-center gap-[6px] hover:bg-[#6D28D9] text-white"><CheckCircle size={14} /><span className="text-[14px] font-medium">Resolve</span></button>

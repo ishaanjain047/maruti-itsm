@@ -29,7 +29,8 @@ import {
   Frown,
   Paperclip,
   BookOpen,
-  UserCheck
+  UserCheck,
+  Eye
 } from 'lucide-react';
 
 // --- Types ---
@@ -224,8 +225,21 @@ const TicketView: React.FC<{ ticketId: string }> = ({ ticketId }) => {
     'Conversation & Response',
     'Ticket Journey',
     'Knowledge Base',
-    'Summary & Details',
-    'Related Tickets'
+    'Summary & Related'
+  ];
+
+  const [kbFeedback, setKbFeedback] = useState<Record<string, 'up' | 'down' | null>>({
+    'KB-2089': null,
+    'KB-2110': null,
+    'KB-1924': null
+  });
+
+  const [selectedKbArticle, setSelectedKbArticle] = useState<any>(null);
+
+  const kbArticles = [
+    { id: 'KB-2089', title: 'SAP Module Crash — Memory Leak Fix', match: 94, category: 'Application' },
+    { id: 'KB-2110', title: 'VPN Auto-Reconnect Configuration', match: 89, category: 'Network' },
+    { id: 'KB-1924', title: 'Outlook Mobile Sync Reset Steps', match: 87, category: 'Email' }
   ];
 
   return (
@@ -278,9 +292,17 @@ const TicketView: React.FC<{ ticketId: string }> = ({ ticketId }) => {
               </div>
               <div className="flex items-center gap-[10px]">
                 {/* Element 1 — SLA CHIP */}
-                <div className="border border-[#FCA5A5] bg-[#FEF2F2] rounded-[8px] px-[14px] py-[6px] flex items-center gap-[6px] flex-shrink-0">
+                <div className="border border-[#FCA5A5] bg-[#FEF2F2] rounded-[8px] px-[14px] py-[6px] flex items-center gap-[5px] flex-shrink-0">
                   <Clock size={14} className="text-danger" />
+                  <span className="text-[11px] font-bold text-danger uppercase tracking-wider">SLA</span>
                   <span className="text-[13px] font-bold text-danger">12 min</span>
+                </div>
+
+                {/* Element 1b — OLA CHIP */}
+                <div className="border border-[#FDE68A] bg-[#FFFBEB] rounded-[8px] px-[14px] py-[6px] flex items-center gap-[5px] flex-shrink-0">
+                  <Clock size={14} className="text-[#D97706]" />
+                  <span className="text-[11px] font-bold text-[#D97706] uppercase tracking-wider">OLA</span>
+                  <span className="text-[13px] font-bold text-[#D97706]">6 min</span>
                 </div>
                 
                 {/* Element 2 — ESCALATE BUTTON */}
@@ -543,17 +565,196 @@ const TicketView: React.FC<{ ticketId: string }> = ({ ticketId }) => {
               </div>
             )}
             
-            {/* Other tabs placeholders for completeness */}
             {activeTab === 'Knowledge Base' && (
               <div className="p-8">
                 <div className="flex items-center gap-3 mb-6">
                   <BookOpen size={16} className="text-primary" />
                   <span className="text-micro font-bold tracking-widest text-text-muted uppercase">KB SUGGESTIONS</span>
                 </div>
-                {/* Content... */}
-                <div className="bg-white border border-border rounded-card p-5">
-                  <h4 className="text-[15px] font-semibold text-text-primary">SAP Module Crash — Memory Leak Fix</h4>
-                  <span className="text-[12px] font-bold px-2 py-0.5 rounded bg-success text-white mt-2 inline-block">94% match</span>
+                
+                <div className="flex flex-col gap-3">
+                  {kbArticles.map((article) => (
+                    <div 
+                      key={article.id} 
+                      className="bg-white border border-border rounded-[10px] p-4 px-5 hover:border-primary hover:shadow-[0_2px_8px_rgba(91,79,232,0.08)] transition-all group"
+                    >
+                      <div className="flex justify-between items-start">
+                        <h4 className="text-[15px] font-medium text-text-primary">{article.title}</h4>
+                        <div className="flex items-center gap-2">
+                          <button 
+                            onClick={() => setKbFeedback(prev => ({ ...prev, [article.id]: prev[article.id] === 'up' ? null : 'up' }))}
+                            className={`p-1 transition-colors ${kbFeedback[article.id] === 'up' ? 'text-success' : 'text-text-muted hover:text-text-primary'}`}
+                          >
+                            <ThumbsUp size={14} fill={kbFeedback[article.id] === 'up' ? 'currentColor' : 'none'} />
+                          </button>
+                          <button 
+                            onClick={() => setKbFeedback(prev => ({ ...prev, [article.id]: prev[article.id] === 'down' ? null : 'down' }))}
+                            className={`p-1 transition-colors ${kbFeedback[article.id] === 'down' ? 'text-danger' : 'text-text-muted hover:text-text-primary'}`}
+                          >
+                            <ThumbsDown size={14} fill={kbFeedback[article.id] === 'down' ? 'currentColor' : 'none'} />
+                          </button>
+                        </div>
+                      </div>
+                      
+                      <div className="mt-1.5">
+                        <span className={`text-[12px] font-semibold px-2 py-0.5 rounded-[4px] ${
+                          article.match >= 90 ? 'bg-[#D1FAE5] text-[#059669]' : 
+                          article.match >= 80 ? 'bg-[#FEF3C7] text-[#D97706]' : 
+                          'bg-[#EEF0FF] text-[#5B4FE8]'
+                        }`}>
+                          {article.match}% match
+                        </span>
+                      </div>
+
+                      <div className="mt-3">
+                        <button 
+                          onClick={() => {
+                            setSelectedKbArticle(article);
+                            setIsPdfVisible(true);
+                          }}
+                          className="flex items-center gap-2 border border-primary text-primary text-[13px] font-medium px-3.5 py-1.5 rounded-[6px] hover:bg-primary-light transition-colors"
+                        >
+                          <FileText size={12} />
+                          View Document
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'Summary & Related' && (
+              <div className="p-8 px-10 overflow-y-auto h-full">
+                {/* PART A — AI GENERATED SUMMARY */}
+                <div className="bg-[#EEF0FF] border border-[#C7D2FE] rounded-[12px] p-5 px-6 mb-5">
+                  <div className="flex items-center gap-2">
+                    <Sparkles size={14} className="text-primary" />
+                    <span className="text-micro font-bold tracking-[0.08em] text-primary uppercase">AI-GENERATED SUMMARY</span>
+                  </div>
+                  <p className="mt-2.5 text-[14px] text-[#374151] leading-[1.7]">
+                    User reported SAP production planning module crashing on Line 3 at Gurgaon plant. Batch scheduler fails to open every time it's launched. AI Agent identified possible memory leak in SAP PP v7.4. L1 has attempted standard restart — issue persists. Production line currently halted, business impact is critical.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-3 gap-4 mb-5">
+                  <div className="bg-white border border-border rounded-[12px] p-4 px-5 shadow-card">
+                    <span className="text-micro font-bold text-text-muted uppercase tracking-wider">USER SENTIMENT</span>
+                    <div className="flex items-center gap-2 mt-2.5">
+                      <Frown size={20} className="text-danger" />
+                      <span className="text-[16px] font-semibold text-danger">Frustrated</span>
+                    </div>
+                    <p className="mt-1.5 text-[12px] text-text-secondary leading-relaxed">
+                      Detected from 3 escalating messages. Urgency language: "the line is halted", "please hurry".
+                    </p>
+                  </div>
+
+                  <div className="bg-white border border-border rounded-[12px] p-4 px-5 shadow-card">
+                    <span className="text-micro font-bold text-text-muted uppercase tracking-wider">BUSINESS IMPACT</span>
+                    <div className="flex items-center gap-2 mt-2.5">
+                      <AlertTriangle size={20} className="text-danger" />
+                      <span className="text-[16px] font-semibold text-danger">Critical</span>
+                    </div>
+                    <p className="mt-1.5 text-[12px] text-text-secondary leading-relaxed">
+                      Production line halted. Estimated impact: 200+ workers, Line 3 output at 0% for 38 min.
+                    </p>
+                  </div>
+
+                  <div className="bg-white border border-border rounded-[12px] p-4 px-5 shadow-card">
+                    <span className="text-micro font-bold text-text-muted uppercase tracking-wider">AI CLASSIFICATION</span>
+                    <div className="flex flex-col mt-2">
+                      <div className="flex justify-between py-2 border-b border-[#F3F4F6]">
+                        <span className="text-[11px] text-text-muted uppercase">Category</span>
+                        <span className="text-[14px] font-medium text-text-primary">Application</span>
+                      </div>
+                      <div className="flex justify-between py-2 border-b border-[#F3F4F6]">
+                        <span className="text-[11px] text-text-muted uppercase">Type</span>
+                        <span className="text-[14px] font-medium text-text-primary">Incident</span>
+                      </div>
+                      <div className="flex justify-between py-2 border-b border-[#F3F4F6]">
+                        <span className="text-[11px] text-text-muted uppercase">Root Cause</span>
+                        <span className="text-[14px] font-bold text-danger">Memory Leak</span>
+                      </div>
+                      <div className="flex justify-between py-2">
+                        <span className="text-[11px] text-text-muted uppercase">CSAT Score</span>
+                        <span className="text-[14px] font-bold text-warning">4.2 / 5</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="h-[1px] bg-border my-2 mb-6" />
+
+                {/* PART B — RELATED TICKETS */}
+                <div className="grid grid-cols-2 gap-6 mb-6">
+                  <div className="bg-white border border-border rounded-[12px] p-5 shadow-card">
+                    <span className="text-micro font-bold text-text-muted uppercase tracking-wider">TICKET PROPERTIES</span>
+                    <div className="flex flex-col mt-4">
+                      {[
+                        { label: 'Priority', value: 'P1' },
+                        { label: 'Status', value: 'In Progress' },
+                        { label: 'Category', value: 'Application' },
+                        { label: 'Type', value: 'Incident' },
+                        { label: 'Impact', value: 'High' },
+                        { label: 'Urgency', value: 'Critical', urgent: true },
+                      ].map((prop, i) => (
+                        <div key={i} className="flex justify-between py-2 border-b border-[#F3F4F6] last:border-0">
+                          <span className="text-[11px] text-text-muted uppercase">{prop.label}</span>
+                          <span className={`text-[14px] font-medium ${prop.urgent ? 'text-danger' : 'text-text-primary'}`}>{prop.value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="bg-white border border-border rounded-[12px] p-5 shadow-card">
+                    <div className="flex items-center gap-2 mb-3">
+                      <BookOpen size={14} className="text-primary" />
+                      <span className="text-micro font-bold text-text-muted uppercase tracking-wider">KB SUGGESTIONS</span>
+                    </div>
+                    <div className="flex flex-col">
+                      {kbArticles.map((article, i) => (
+                        <div key={i} className="py-2.5 border-b border-[#F3F4F6] last:border-0">
+                          <div className="flex justify-between items-start">
+                            <span className="text-[14px] font-medium text-text-primary truncate pr-4">{article.title}</span>
+                            <div className="flex items-center gap-2">
+                              <ThumbsUp size={14} className="text-text-muted" />
+                              <ThumbsDown size={14} className="text-text-muted" />
+                            </div>
+                          </div>
+                          <div className="mt-1">
+                            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                              article.match >= 90 ? 'bg-[#D1FAE5] text-[#059669]' : 
+                              article.match >= 80 ? 'bg-[#FEF3C7] text-[#D97706]' : 
+                              'bg-[#EEF0FF] text-[#5B4FE8]'
+                            }`}>
+                              {article.match}%
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white border border-border rounded-[12px] p-5 shadow-card">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Link2 size={16} className="text-warning" />
+                    <h3 className="text-[16px] font-semibold text-text-primary">Related Tickets</h3>
+                  </div>
+                  <div className="flex flex-col gap-2.5">
+                    {[
+                      { id: 'INC-4498', title: 'SAP crash — similar plant issue', status: 'In Progress', statusColor: 'bg-[#FEF3C7] text-[#D97706]' },
+                      { id: 'INC-4401', title: 'SAP module timeout — Gurgaon plant', status: 'Resolved', statusColor: 'bg-[#D1FAE5] text-[#059669]' },
+                    ].map((ticket, i) => (
+                      <div key={i} className="border border-border rounded-[10px] p-3.5 px-4.5 flex justify-between items-center hover:bg-[#F9FAFB] cursor-pointer transition-all">
+                        <div className="flex flex-col">
+                          <span className="text-[13px] font-bold text-warning">{ticket.id}</span>
+                          <span className="text-[14px] text-text-primary mt-0.5">{ticket.title}</span>
+                        </div>
+                        <span className={`text-[12px] font-bold px-2.5 py-1 rounded-full ${ticket.statusColor}`}>{ticket.status}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
@@ -610,17 +811,17 @@ const TicketView: React.FC<{ ticketId: string }> = ({ ticketId }) => {
         
         {/* PDF Viewer Overlay */}
         <div 
-          className={`fixed top-[56px] right-0 bottom-0 bg-white border-l border-border shadow-[-4px_0_16px_rgba(0,0,0,0.08)] z-[100] transition-transform duration-300 ease-in-out w-[480px] flex flex-col ${
+          className={`fixed top-[56px] right-0 bottom-0 bg-white border-l border-border shadow-[-4px_0_16px_rgba(0,0,0,0.08)] z-[100] transition-transform duration-300 ease-in-out w-[460px] flex flex-col ${
             isPdfVisible ? 'translate-x-0' : 'translate-x-full'
           }`}
         >
           <header className="p-5 border-b border-border flex justify-between items-start">
             <div className="flex flex-col gap-1">
-              <h2 className="text-[16px] font-bold text-text-primary leading-tight">SAP Module Crash — Memory Leak Fix</h2>
+              <h2 className="text-[16px] font-bold text-text-primary leading-tight">{selectedKbArticle?.title || 'SAP Module Crash — Memory Leak Fix'}</h2>
               <div className="flex items-center gap-2 mt-2">
-                <span className="bg-primary-light text-primary text-[11px] font-bold px-2 py-0.5 rounded">KB-2089</span>
-                <span className="bg-border-subtle text-text-secondary text-[11px] px-2 py-0.5 rounded font-medium">Application</span>
-                <span className="bg-success text-white text-[10px] font-bold px-2 py-0.5 rounded">Published</span>
+                <span className="bg-primary-light text-primary text-[11px] font-bold px-2 py-0.5 rounded">{selectedKbArticle?.id || 'KB-2089'}</span>
+                <span className="bg-border-subtle text-text-secondary text-[11px] px-2 py-0.5 rounded font-medium">{selectedKbArticle?.category || 'Application'}</span>
+                <span className="bg-[#D1FAE5] text-[#059669] text-[10px] font-bold px-2 py-0.5 rounded">Published</span>
               </div>
             </div>
             <button onClick={() => setIsPdfVisible(false)} className="text-text-muted hover:text-text-primary transition-colors p-1">
@@ -629,14 +830,49 @@ const TicketView: React.FC<{ ticketId: string }> = ({ ticketId }) => {
           </header>
           
           <div className="flex-1 overflow-y-auto p-6 px-8 text-[14px] text-text-primary leading-[1.8]">
-            <h3 className="font-bold text-[16px] mb-3 border-b border-border-subtle pb-1">Overview</h3>
-            <p className="mb-6">This article provides resolution steps for SAP PP module crashes caused by memory leaks. Applicable to SAP PP v7.0 and above.</p>
-            <h3 className="font-bold text-[16px] mb-3 border-b border-border-subtle pb-1">Resolution Steps</h3>
-            <ol className="list-decimal pl-5 flex flex-col gap-3 font-medium">
-              <li>Identify Dump: Run ST22 to identify the ABAP dump.</li>
-              <li>Restart Service: Graceful restart of SAP message server via SMGW.</li>
-            </ol>
+            <section className="mb-8">
+              <h3 className="font-bold text-[17px] mb-2 text-[#111827]">Overview</h3>
+              <p>This article provides comprehensive troubleshooting and resolution steps for Network-related issues frequently encountered across Maruti Suzuki IT infrastructure. It covers initial diagnostics, service restart procedures, cache clearing, and connectivity verification.</p>
+            </section>
+
+            <section className="mb-8">
+              <h3 className="font-bold text-[17px] mb-2 text-[#111827]">Problem Description</h3>
+              <p>Users may experience service disruption, application errors, or connectivity issues related to VPN configuration for remote workers. Common symptoms include timeout errors, authentication failures, and intermittent connectivity drops.</p>
+            </section>
+
+            <section className="mb-8">
+              <h3 className="font-bold text-[17px] mb-2 text-[#111827]">Prerequisites</h3>
+              <ul className="list-disc pl-5 space-y-1 text-[#374151]">
+                <li>Admin access to the relevant service/application</li>
+                <li>Network connectivity to the affected systems</li>
+                <li>Access to monitoring dashboards</li>
+              </ul>
+            </section>
+
+            <section className="mb-8">
+              <h3 className="font-bold text-[17px] mb-2 text-[#111827]">Resolution Steps</h3>
+              <ol className="list-decimal pl-5 space-y-4">
+                <li><strong>Initial Diagnostics:</strong> Check the application/service status on the centralized monitoring dashboard. Look for any alerts or anomalies in the last 24 hours.</li>
+                <li><strong>Service Restart:</strong> If the service is unresponsive, perform a graceful restart and wait 60 seconds for the service to fully initialize.</li>
+                <li><strong>Cache Clearing:</strong> Clear application cache via admin panel, reset user session cache, and flush DNS on affected workstations.</li>
+                <li><strong>Connectivity Verification:</strong> Ping the service endpoint, check firewall rules, validate SSL certificates, and test from multiple network segments.</li>
+                <li><strong>User Validation:</strong> Confirm resolution with affected users — ask them to clear browser cache, re-login, and verify the specific failing workflow.</li>
+              </ol>
+            </section>
           </div>
+
+          <footer className="p-5 border-t border-border bg-bg-page flex flex-col gap-3">
+            <div className="flex justify-between text-[12px] text-text-muted">
+              <div className="flex items-center gap-4">
+                <span className="flex items-center gap-1"><Eye size={12} /> 892 views</span>
+                <span className="flex items-center gap-1"><ThumbsUp size={12} className="text-success" /> 88% helpful</span>
+              </div>
+              <span>Updated 2 days ago</span>
+            </div>
+            <div className="text-[12px] text-text-muted">
+              Author: <span className="font-medium text-text-primary">IT Knowledge Team</span>
+            </div>
+          </footer>
         </div>
       </div>
     </div>
