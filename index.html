@@ -1,0 +1,133 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maruti ITSM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --color-primary: #5B4FE8;
+      --color-primary-light: #EEF0FF;
+      --color-primary-dark: #4338CA;
+      --color-bg-page: #F8F9FB;
+      --color-bg-surface: #FFFFFF;
+      --color-border: #E5E7EB;
+      --color-border-subtle: #F3F4F6;
+      --color-text-primary: #111827;
+      --color-text-secondary: #6B7280;
+      --color-text-muted: #9CA3AF;
+      --color-p1-bg: #FEE2E2;
+      --color-p1-text: #DC2626;
+      --color-p2-bg: #FEF3C7;
+      --color-p2-text: #D97706;
+      --color-p3-bg: #DBEAFE;
+      --color-p3-text: #2563EB;
+      --color-p4-bg: #F3F4F6;
+      --color-p4-text: #6B7280;
+      --color-success: #10B981;
+      --color-warning: #F59E0B;
+      --color-danger: #EF4444;
+      --color-ai: #7C3AED;
+      --color-ai-light: #EDE9FE;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background-color: var(--color-bg-page);
+      color: var(--color-text-secondary);
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--color-border);
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--color-text-muted);
+    }
+  </style>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: 'var(--color-primary)',
+            'primary-light': 'var(--color-primary-light)',
+            'primary-dark': 'var(--color-primary-dark)',
+            'bg-page': 'var(--color-bg-page)',
+            'bg-surface': 'var(--color-bg-surface)',
+            border: 'var(--color-border)',
+            'border-subtle': 'var(--color-border-subtle)',
+            'text-primary': 'var(--color-text-primary)',
+            'text-secondary': 'var(--color-text-secondary)',
+            'text-muted': 'var(--color-text-muted)',
+            'p1-bg': 'var(--color-p1-bg)',
+            'p1-text': 'var(--color-p1-text)',
+            'p2-bg': 'var(--color-p2-bg)',
+            'p2-text': 'var(--color-p2-text)',
+            'p3-bg': 'var(--color-p3-bg)',
+            'p3-text': 'var(--color-p3-text)',
+            'p4-bg': 'var(--color-p4-bg)',
+            'p4-text': 'var(--color-p4-text)',
+            success: 'var(--color-success)',
+            warning: 'var(--color-warning)',
+            danger: 'var(--color-danger)',
+            ai: 'var(--color-ai)',
+            'ai-light': 'var(--color-ai-light)',
+          },
+          borderRadius: {
+            'card': '12px',
+            'badge': '6px',
+            'btn': '8px',
+            'input': '8px',
+          },
+          boxShadow: {
+            'card': '0 1px 3px rgba(0,0,0,0.06)',
+          },
+          fontSize: {
+            'page-title': '20px',
+            'section-header': '16px',
+            'body': '14px',
+            'table': '13px',
+            'micro': '11px',
+            'kpi': '28px',
+            'ticket-id': '13px',
+          }
+        }
+      }
+    }
+  </script>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.4",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.13.0",
+    "lucide-react": "https://esm.sh/lucide-react@^0.574.0",
+    "recharts": "https://esm.sh/recharts@^2.15.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body>
+  <div id="root"></div>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
